@@ -43,6 +43,8 @@ stacks/
 
 *The names above illustrate the layout, not actual accepted stacks.*
 
+**Prefer to fork?** Fork Artilect, branch from `main`, and add each upstream project directly with `git submodule add https://github.com/owner/project.git stacks/YYYY-MM-DD/your-handle/project`. Open a pull request back to `main`. Never add a wrapper repo at the contributor directory. The guided Issue form is the easier, automated equivalent.
+
 For a battler or passerby:
 
 ```bash
@@ -55,9 +57,9 @@ This downloads that contributor's **pinned source revisions**, subject to reposi
 
 ## Bring a track
 
-[Submit a battle entry](../../issues/new?template=battle.yml) with the week's selected stack path, an accessible video/audio link, and credits. Artilect Pages collects approved stacks from Git history and performances from public submission issues. Producers retain their own media and tools; Artilect links to or embeds permitted media rather than copying large files into Git.
+[Submit a battle entry](../../issues/new?template=battle.yml) with the week's selected stack path, an accessible video/audio link, and credits. Artilect Pages collects approved stacks from Git history and performances from public submission issues. Producers retain their own media and tools; Artilect links to or embeds permitted media rather than copying large files into Git. A maintainer marks battle issues `showcase` to publish them on Pages, and may additionally mark one `winner`. Mark an accepted stack's submission issue `selected-stack` to identify the community selection. Create these GitHub issue labels on their first use.
 
-The MC only needs to host the conversation, choose the stack and battlers with the community, review proposed changes, and mark featured entries in issues when appropriate. GitHub Actions handles refreshing the site on merges, issue activity, and a weekly schedule.
+The MC only needs to host the conversation, choose the stack and battlers with the community, review proposed changes, and mark approved media entries in issues. GitHub Actions handles refreshing the site on merges, issue activity, and a weekly schedule.
 
 ## How to play
 
