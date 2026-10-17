@@ -115,7 +115,7 @@ const vid=s=>{const id=yt(s);return id?'<a class="media" target="_blank" rel="no
 let data={stacks:[],battles:[]};
 function stackCard(s){
  const desc=s.notes||'Direct upstream sources, selected and composed by the community.';
- return '<article class="card"><div class="cardtop"><small>'+E(s.week)+' · '+E(s.technologies.length)+' UPSTREAM SOURCES</small><h3>@'+E(s.contributor)+'</h3></div>'+
+ return '<article class="card"><div class="cardtop"><small>'+E(s.week)+' · '+E(s.technologies.length)+' UPSTREAM SOURCES'+(s.selected?' · ★ CROWD PICK':'')+'</small><h3>@'+E(s.contributor)+'</h3></div>'+
  (s.demo?vid(s.demo):'')+'<div class="cardbody"><p>'+E(desc).slice(0,550)+'</p><div class="projects">'+cardUpstreams(s.technologies)+'</div>'+
  '<div class="cardbottom"><a href="'+E(U(s.github))+'" target="_blank" rel="noopener noreferrer">GET THE SUBS ↗</a>'+(s.issue_url?'<a href="'+E(U(s.issue_url))+'" target="_blank" rel="noopener noreferrer">CREDITS ↗</a>':'')+'</div></div></article>';
 }
