@@ -61,6 +61,12 @@ This downloads that contributor's **pinned source revisions**, subject to reposi
 
 The MC only needs to host the conversation, choose the stack and battlers with the community, review proposed changes, and mark approved media entries in issues. GitHub Actions handles refreshing the site on merges, issue activity, and a weekly schedule.
 
+## One-time maintainer setup
+
+Pages must use **GitHub Actions** as its publishing source (already selected during repository setup). In **Settings → Actions → General → Workflow permissions**, enable **Allow GitHub Actions to create and approve pull requests** so the automated stack-proposal workflow can open reviewable PRs. Keep human approval required for merging. In Issues, create the labels `showcase`, `winner`, and `selected-stack` when first needed. The stage publishes on merges, issue activity, manual dispatch, and Wednesday's scheduled refresh. The site implementation lives on the separate `site-source` branch.
+
+Git does not track empty directories; `stacks/` will appear automatically with the **first accepted set of upstream gitlinks**. It is intentionally not seeded with fake submissions.
+
 ## How to play
 
 *A short video walkthrough will live here when one has been produced.* Until then: **pick upstream projects → drop URLs through the issue template → merge the resulting direct submodules → demo → community selects → two battlers flip → share and credit.**
