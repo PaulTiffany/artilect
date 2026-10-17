@@ -1,0 +1,53 @@
+name: "Drop a stack"
+description: "Nominate a composition of independently made technologies. Artilect pins the ORIGINAL upstream repositories as direct submodules."
+title: "[STACK] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Bring the subs.** No wrapper repository is needed. Include 2–8 public GitHub repositories. We pin their default-branch commits when your submission is accepted.
+  - type: input
+    id: week
+    attributes:
+      label: "Week (YYYY-MM-DD)"
+      description: "Use the Wednesday date for the showcase."
+      placeholder: "2026-10-21"
+    validations:
+      required: true
+  - type: input
+    id: contributor
+    attributes:
+      label: "Contributor GitHub handle"
+      placeholder: "paul"
+      description: "Only letters, numbers, underscores and hyphens; this becomes your folder name."
+    validations:
+      required: true
+  - type: textarea
+    id: upstream
+    attributes:
+      label: "Upstream technologies (one GitHub repository URL per line)"
+      description: "2–8 DISTINCT PUBLIC source repositories. No links to a wrapper stack repository, no shell commands."
+      placeholder: |
+        https://github.com/owner/project-one
+        https://github.com/other/project-two
+    validations:
+      required: true
+  - type: input
+    id: demonstration
+    attributes:
+      label: "Demo video or audio URL (optional)"
+      placeholder: "https://www.youtube.com/watch?v=..."
+  - type: textarea
+    id: notes
+    attributes:
+      label: "What can your composition do, and who made the upstream work?"
+      description: "Give each upstream creator credit, what each technology contributes, and any significant install requirements, paid models, or limitations."
+    validations:
+      required: true
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: "Upstream-first rules"
+      options:
+        - label: "These are third-party upstream technologies I may legally use; I will credit their creators and disclose proprietary requirements."
+          required: true
