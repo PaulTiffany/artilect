@@ -2,9 +2,9 @@
 
 **Bring the subs. Drop the stack. Pass the mic. All glory upstream.**
 
-Artilect is an upstream-first AI production cypher. We don't ask you to invent the instruments. We ask what you can make when you **sample, compose, and celebrate other people's technology**.
+Artilect is an upstream-first AI production cypher, drawing on hip-hop's four foundations: **DJing, MCing, breaking, and graffiti**. Dig for other people's technologies, compose a stack, and give their creators credit.
 
-**Wednesday:** bring a stack, give a short demo (2–3 minutes), credit its upstream creators. The community chooses a stack and, when two producers are available, puts it in the hands of two battlers. They go bar for bar, branch for branch, making original audio, video, scenes, and remixes with the same technology. The audience inspires the next move. Next meetup, screen the results and pass the mic.
+**Wednesday's main event: MC battles.** Bring your stacks and give short demos (2–3 minutes). The crowd picks a stack; two producers battle with the same upstream technologies, bar for bar, branch for branch. The crowd calls the flips. Next meetup, play the results.
 
 **Steal the show, not the credit.**
 
