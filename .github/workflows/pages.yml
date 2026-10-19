@@ -57,6 +57,24 @@ jobs:
           ARTILECT_OUT: _pages
           ARTILECT_TEMPLATE: _starter_src
         run: python _site_src/site/build.py
+      - name: Validate weekly archive and browser JavaScript
+        run: |
+          python - <<'PY'
+          import json, re
+          from pathlib import Path
+          out = Path("_pages")
+          html = (out / "index.html").read_text(encoding="utf8")
+          scripts = re.findall(r"<script(?:\s[^>]*)?>(.*?)</script>", html, re.S | re.I)
+          assert len(scripts) == 1, "Expected one inline site script"
+          (out / "_browser-check.js").write_text(scripts[0], encoding="utf8")
+          data = json.loads((out / "site-data.json").read_text(encoding="utf8"))
+          assert all(key in data for key in ("stacks", "battles", "weeks", "active_week"))
+          assert any(w["week"] == data["active_week"] for w in data["weeks"])
+          assert sum(w["productions"] for w in data["weeks"]) == len(data["stacks"])
+          assert sum(w["battles"] for w in data["weeks"]) == len(data["battles"])
+          PY
+          node --check _pages/_browser-check.js
+          rm _pages/_browser-check.js
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload Pages artifact
