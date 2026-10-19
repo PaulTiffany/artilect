@@ -1,81 +1,33 @@
-# ARTILECT
+# YOUR ARTILECT PRODUCTION
+
+**Make it. Show it. Share how it was made.**
+
+**Watch:** [Add your video or other finished work](https://example.com/replace-this)
+
+**What I made:** Replace this sentence with one clear line about the result.
+
+## Make something like it
+
+Tell your favorite coding agent:
+
+> Read AGENTS.md and make an Artilect production using X, Y, and Z about [your subject]. Produce real media, document the process, and prepare the repository for submission.
+
+To reproduce manually, follow the actual commands documented in `production/README.md`. List external models, applications, accounts, operating systems, and assets there. **Don't claim one-click reproduction if it isn't.**
+
+## Upstream credits
+
+List every upstream creator and what you used. Actual dependencies must be **direct Git submodules** in `technologies/` (Git keeps the original repositories and exact commit revisions).
+
+| Original project | Creator / license | What it does here |
+|---|---|---|
+| Add links after choosing technologies | Credit the actual author | Describe the role |
+
+## Rights and limitations
+
+Explain media reuse permissions, model/API requirements, any non-free components, and what you did or could not reproduce.
+
+## Drop it at Artilect
+
+Fill in `artilect.json`, run `python scripts/validate.py`, publish this repository publicly, then [submit its URL to Artilect](https://github.com/PaulTiffany/artilect/issues/new?template=stack.yml). Your production repo will be pinned as **one submodule** in Artilect's weekly collection; your `technologies/` submodules retain all the upstream provenance.
 
 **Bring the subs. Drop the stack. Pass the mic. All glory upstream.**
-
-Artilect is an upstream-first AI production cypher, drawing on hip-hop's four foundations: **DJing, MCing, breaking, and graffiti**. Dig for other people's technologies, compose a stack, and give their creators credit.
-
-**Wednesday's main event: MC battles.** Bring your stacks and give short demos (2–3 minutes). The crowd picks a stack; two producers battle with the same upstream technologies, bar for bar, branch for branch. The crowd calls the flips. Next meetup, play the results.
-
-**Steal the show, not the credit.**
-
-[See the stage (GitHub Pages)](https://paultiffany.github.io/artilect/) · [Drop a stack](../../issues/new?template=stack.yml) · [Drop a battle entry](../../issues/new?template=battle.yml) · [Browse submissions](../../issues)
-
-## The rule: upstream first
-
-1. **Not your featured technology.** Demonstrate a thoughtful *combination* of independently created upstream projects. Your direction, artistry, selection, configuration, and minimal integration glue are yours.
-2. **Direct submodules, no wrappers.** Artilect records each upstream source as a **direct Git submodule** at `stacks/YYYY-MM-DD/<contributor>/<technology>/`. The nominated stack is that directory. No stack-repository submodule in between.
-3. **Show and credit.** Name the upstream authors, link each original repository, and demonstrate what the combination makes possible. Give credit again in released media.
-4. **Same samples, different flips.** Battlers start from the selected, pinned submodule set. They can direct and make original art, but do not silently replace the shared technologies during a round.
-5. **Be transparent.** Disclose paid/proprietary services, compute needs, manual steps, and generative-media provenance. Source availability is **not** the same as one-click installability.
-6. **Respect creators and audiences.** Respect licenses, permissions, consent, and platform policies. Do not present synthetic real-world footage as documentary evidence.
-
-There is no mandatory polished film and no promise of a battle every week. Rough demos and honest failures are welcome; the people come first.
-
-## Submit a stack
-
-**Easiest:** [open the submission template](../../issues/new?template=stack.yml). Enter the Wednesday date (`YYYY-MM-DD`), your GitHub handle, **two or more** public upstream GitHub repositories (one URL per line), a demonstration link if you have one, and credit/usage notes.
-
-A GitHub Action validates public repository URLs and proposes a pull request that pins each technology to the current default-branch commit. A maintainer reviews and merges it. The actual files under `stacks/` are Git submodule *gitlinks*, not copied upstream code, contributor wrapper repos, or installed dependencies.
-
-```text
-README.md                 ← rulebook / contributing guide
-LICENSE                   ← MIT for Artilect's own code
-.gitmodules               ← Git's direct upstream URLs
-stacks/
-  2026-10-21/
-    paul/
-      blender-mcp/        ← upstream Git submodule
-      soundcraft/         ← upstream Git submodule
-    larry/
-      project-a/          ← upstream Git submodule
-      project-b/          ← upstream Git submodule
-```
-
-*The names above illustrate the layout, not actual accepted stacks.*
-
-**Prefer to fork?** Fork Artilect, branch from `main`, and add each upstream project directly with `git submodule add https://github.com/owner/project.git stacks/YYYY-MM-DD/your-handle/project`. Open a pull request back to `main`. Never add a wrapper repo at the contributor directory. The guided Issue form is the easier, automated equivalent.
-
-For a battler or passerby:
-
-```bash
-git clone https://github.com/PaulTiffany/artilect.git
-cd artilect
-git submodule update --init --depth 1 -- stacks/YYYY-MM-DD/contributor/
-```
-
-This downloads that contributor's **pinned source revisions**, subject to repository accessibility. It does **not** install runtimes, model weights, or operating-system packages. Inspect unfamiliar code before executing it. For submodules whose pinned commit is unavailable by a shallow fetch, rerun that update without `--depth 1`.
-
-## Bring a track
-
-[Submit a battle entry](../../issues/new?template=battle.yml) with the week's selected stack path, an accessible video/audio link, and credits. Artilect Pages collects approved stacks from Git history and performances from public submission issues. Producers retain their own media and tools; Artilect links to or embeds permitted media rather than copying large files into Git. A maintainer marks battle issues `showcase` to publish them on Pages, and may additionally mark one `winner`. Mark an accepted stack's submission issue `selected-stack` to identify the community selection. Create these GitHub issue labels on their first use.
-
-The MC only needs to host the conversation, choose the stack and battlers with the community, review proposed changes, and mark approved media entries in issues. GitHub Actions handles refreshing the site on merges, issue activity, and a weekly schedule.
-
-## One-time maintainer setup
-
-Pages must use **GitHub Actions** as its publishing source (already selected during repository setup). In **Settings → Actions → General → Workflow permissions**, enable **Allow GitHub Actions to create and approve pull requests** so the automated stack-proposal workflow can open reviewable PRs. Keep human approval required for merging. In Issues, create the labels `showcase`, `winner`, and `selected-stack` when first needed. The stage publishes on merges, issue activity, manual dispatch, and Wednesday's scheduled refresh. The site implementation lives on the separate `site-source` branch.
-
-Git does not track empty directories; `stacks/` will appear automatically with the **first accepted set of upstream gitlinks**. It is intentionally not seeded with fake submissions.
-
-## How to play
-
-*A short video walkthrough will live here when one has been produced.* Until then: **pick upstream projects → drop URLs through the issue template → merge the resulting direct submodules → demo → community selects → two battlers flip → share and credit.**
-
-## Licenses and boundaries
-
-- `LICENSE` (MIT) covers **Artilect's original software**, not its submodule targets.
-- Artilect-authored README text and site design/content are offered under **CC BY 4.0**, unless otherwise noted. Contributors retain ownership of their submitted content and grant only the permissions they explicitly give for Artilect showcases.
-- **Every upstream project keeps its own license and attribution.** A submodule pointer never relicenses upstream code. Confirm model, asset, music, and API terms before publication.
-- BGI Nexus is a community gathering context, not an automatic transfer of participant IP to any organization.
-
-**The technology is theirs. The creativity is ours. The credit travels upstream.**

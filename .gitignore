@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+.env
+.env.*
+!.env.example
+node_modules/
+.venv/
+.cache/
+.DS_Store
+*.key
+*.pem
+*.mp4
+*.mov
+*.mkv
+*.wav
+*.flac

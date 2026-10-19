@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "title": "TODO: Name your production",
+  "summary": "TODO: One sentence about what you made",
+  "media_url": "",
+  "media_path": "",
+  "media_type": "video",
+  "reproduce": "See production/README.md",
+  "rights_notes": "TODO: upstream licenses, source and media usage notes"
+}
