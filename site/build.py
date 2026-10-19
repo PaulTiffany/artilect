@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import base64
 import configparser
+from datetime import datetime, timedelta, timezone
 import json
 import os
 from pathlib import Path
@@ -196,17 +197,37 @@ def build():
                 "week": week, "producer": producer[:100], "stack": path,
                 "stack_url": BASE + "/tree/main/" + path, "media": media,
                 "notes": field(body, "What did you flip? Upstream credits and production notes")[:3000],
+                "production_title": by_key.get((week, path.split("/")[-1]), {}).get("title", ""),
                 "winner": "winner" in labels, "issue_url": issue.get("html_url", ""),
             })
+    # One metadata snapshot supports both the main event and the weekly archive.
+    # Empty weeks have no fictional performances; the next Wednesday appears as a
+    # zero-entry open crate, kept current by the scheduled publisher.
+    today = datetime.now(timezone.utc).date()
+    active_week = (today + timedelta(days=(2 - today.weekday()) % 7)).isoformat()
+    weeks = {active_week: {"week": active_week, "productions": 0,
+                           "battles": 0, "selected": 0}}
+    for entry in accepted:
+        w = weeks.setdefault(entry["week"], {"week": entry["week"],
+                            "productions": 0, "battles": 0, "selected": 0})
+        w["productions"] += 1
+        w["selected"] += int(entry["selected"])
+    for entry in battles:
+        w = weeks.setdefault(entry["week"], {"week": entry["week"],
+                            "productions": 0, "battles": 0, "selected": 0})
+        w["battles"] += 1
+    weekly_archive = sorted(weeks.values(), key=lambda w: w["week"], reverse=True)
     OUT.mkdir(parents=True, exist_ok=True)
     shutil.copy2(HERE / "index.html", OUT / "index.html")
     (OUT / ".nojekyll").write_text("", encoding="utf8")
     (OUT / "site-data.json").write_text(
-        json.dumps({"stacks": accepted, "battles": battles}, indent=2, ensure_ascii=False),
+        json.dumps({"stacks": accepted, "battles": battles,
+                    "weeks": weekly_archive, "active_week": active_week},
+                   indent=2, ensure_ascii=False),
         encoding="utf8",
     )
     export_starter()
-    print(f"Built: {len(accepted)} accepted production repos, {len(battles)} approved battle entries")
+    print(f"Built: {len(accepted)} accepted production repos, {len(battles)} approved battle entries, {len(weekly_archive)} weekly archive slots")
 
 if __name__ == "__main__":
     build()
