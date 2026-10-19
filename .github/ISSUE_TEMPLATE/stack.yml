@@ -1,53 +1,31 @@
-name: "Drop a stack"
-description: "Nominate a composition of independently made technologies. Artilect pins the ORIGINAL upstream repositories as direct submodules."
+name: "Drop a production"
+description: "Submit the GitHub repo that made your video, music, or other creative work—complete with pinned upstream submodules."
 title: "[STACK] "
 body:
   - type: markdown
     attributes:
       value: |
-        **Bring the subs.** No wrapper repository is needed. Include 2–8 public GitHub repositories. We pin their default-branch commits when your submission is accepted.
+        **Make the thing first.** [Download the Artilect starter](https://paultiffany.github.io/artilect/artilect-starter.zip), or [browse the agent-readable starter branch](https://github.com/PaulTiffany/artilect/tree/submission-template). Your repository is both the finished track and its production recipe.
   - type: input
     id: week
     attributes:
       label: "Week (YYYY-MM-DD)"
-      description: "Use the Wednesday date for the showcase."
+      description: "Wednesday's showcase date."
       placeholder: "2026-10-21"
     validations:
       required: true
   - type: input
-    id: contributor
+    id: repo
     attributes:
-      label: "Contributor GitHub handle"
-      placeholder: "paul"
-      description: "Only letters, numbers, underscores and hyphens; this becomes your folder name."
-    validations:
-      required: true
-  - type: textarea
-    id: upstream
-    attributes:
-      label: "Upstream technologies (one GitHub repository URL per line)"
-      description: "2–8 DISTINCT PUBLIC source repositories. No links to a wrapper stack repository, no shell commands."
-      placeholder: |
-        https://github.com/owner/project-one
-        https://github.com/other/project-two
-    validations:
-      required: true
-  - type: input
-    id: demonstration
-    attributes:
-      label: "Demo video or audio URL (optional)"
-      placeholder: "https://www.youtube.com/watch?v=..."
-  - type: textarea
-    id: notes
-    attributes:
-      label: "What can your composition do, and who made the upstream work?"
-      description: "Give each upstream creator credit, what each technology contributes, and any significant install requirements, paid models, or limitations."
+      label: "Production repository URL"
+      description: "Link to your publicly accessible, finished GitHub production repository with README.md, AGENTS.md, artilect.json and direct technologies/ submodules."
+      placeholder: "https://github.com/your-handle/robot-jazz"
     validations:
       required: true
   - type: checkboxes
-    id: confirm
+    id: confirmation
     attributes:
-      label: "Upstream-first rules"
+      label: "Before you drop"
       options:
-        - label: "These are third-party upstream technologies I may legally use; I will credit their creators and disclose proprietary requirements."
+        - label: "My repository produces the described work, credits the original upstream technology creators, and may be linked publicly on Artilect."
           required: true
