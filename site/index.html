@@ -71,15 +71,15 @@
 <body>
 <header class="top"><nav class="shell">
   <a href="#top" class="brand" aria-label="Artilect home">ARTILECT<span>●</span></a>
-  <div class="links"><a href="#battles">Battles</a><a href="#crates">Stacks</a><a href="#rules">How it works</a><a class="navcta" href="https://github.com/PaulTiffany/artilect/issues/new?template=stack.yml">DROP A STACK ↗</a></div>
+  <div class="links"><a href="#battles">Battles</a><a href="#crates">Productions</a><a href="#rules">How it works</a><a class="navcta" href="./artilect-starter.zip" download>EXPORT TO AGENT ↓</a></div>
 </nav></header>
 <main id="top">
   <section class="hero"><div class="shell hero-grid">
     <div>
       <div class="eyebrow">DJING · MCING · BREAKING · GRAFFITI</div>
       <h1>THE TECH IS<br>THE <span class="scribble">SAMPLE.</span><br>THE ART IS<br>THE FLIP.</h1>
-      <p class="hero-copy">Bring your subs. Drop your stack. Every Wednesday, the crowd picks a stack and two battlers. Then the producers flip the same samples. All glory upstream.</p>
-      <div class="actions"><a class="button" href="https://github.com/PaulTiffany/artilect/issues/new?template=stack.yml">BRING A STACK ↗</a><a class="button ghost" href="#rules">HOW THE CYPHER WORKS ↓</a></div>
+      <p class="hero-copy">Tell your GPT what to make with X, Y and Z. Drop the finished work with its production repo and upstream subs. Then bring it to the Wednesday MC battle.</p>
+      <div class="actions"><a class="button" href="./artilect-starter.zip" download>EXPORT TO AGENT ↓</a><button class="button ghost" id="copy-prompt" type="button">COPY PROMPT</button><a class="button ghost" href="https://github.com/PaulTiffany/artilect/issues/new?template=stack.yml">SUBMIT REPO ↗</a></div>
     </div>
     <div class="record" aria-hidden="true"><div class="disc"><label>ALL GLORY UPSTREAM</label></div><div class="record-note">SUBMODULES ARE THE SAMPLES // 001</div></div>
   </div></section>
@@ -90,18 +90,18 @@
     <div id="battles-list" class="cards" aria-live="polite"></div>
   </div></section>
   <section id="crates" class="section"><div class="shell">
-    <div class="section-title"><div><div class="eyebrow">WHAT THE COMMUNITY BROUGHT</div><h2>THE STACK CRATES.</h2></div><label class="eyebrow" for="week-select">WEEK <select id="week-select"><option value="all">All weeks</option></select></label></div>
-    <p class="sub">Each crate is a contributor's composition of <strong>direct, pinned upstream Git submodules</strong>. Follow the authors. Clone only the technologies you need. Remix responsibly.</p>
+    <div class="section-title"><div><div class="eyebrow">THE TRACKS AND THEIR RECIPES</div><h2>THE STACK CRATES.</h2></div><label class="eyebrow" for="week-select">WEEK <select id="week-select"><option value="all">All weeks</option></select></label></div>
+    <p class="sub">Each track comes with the repo that produced it: scripts, instructions, and pinned upstream technologies. Watch it. Fork it. Flip it.</p>
     <div id="stacks-list" class="cards" aria-live="polite"></div>
   </div></section>
   <section id="rules" class="section" style="background:#e7e1d4"><div class="shell">
     <div class="eyebrow">THE GAME</div><h2>CRATE-DIG. FLIP. REPEAT.</h2>
     <div class="three" style="margin-top:40px">
-      <article class="step"><b>01</b><h3>Bring the subs.</h3><p>Bring two or more independent upstream technologies. Share a two-minute demo, give their makers the credit, and submit the GitHub URLs.</p></article>
-      <article class="step"><b>02</b><h3>Pick the stack.</h3><p>The community selects a composition and two battlers. An accepted contribution is recorded as direct submodules, pinned at specific commits.</p></article>
-      <article class="step"><b>03</b><h3>Pass the mic.</h3><p>Producers battle and trade creative challenges. The crowd reacts, then sees the media and sources together. The next round builds on the last.</p></article>
+      <article class="step"><b>01</b><h3>Make a thing.</h3><p>Tell your favorite agent what to create with X, Y and Z. Use the exported starter to make real media.</p></article>
+      <article class="step"><b>02</b><h3>Drop the repo.</h3><p>Submit the production repository. It records your recipe and upstream submodules. Artilect pins it for the week.</p></article>
+      <article class="step"><b>03</b><h3>Battle it out.</h3><p>Wednesday MC battles put the work onstage. The crowd picks favorites, producers trade flips, and all glory goes upstream.</p></article>
     </div>
-    <div class="actions" style="margin-top:38px"><a class="button" href="https://github.com/PaulTiffany/artilect#readme">READ THE RULEBOOK ↗</a><a class="button" href="https://github.com/PaulTiffany/artilect/issues/new?template=stack.yml" style="background:transparent">SUBMIT A STACK ↗</a></div>
+    <div class="actions" style="margin-top:38px"><a class="button" href="https://github.com/PaulTiffany/artilect#readme">READ THE RULEBOOK ↗</a><a class="button" href="./artilect-starter.zip" download style="background:transparent">GET THE STARTER ↓</a></div>
   </div></section>
 </main>
 <footer class="footer"><div class="shell bottom"><div><a class="brand" href="https://github.com/PaulTiffany/artilect">ARTILECT<span>●</span></a><p>An independent, upstream-first community production experiment. Artilect links to others' software and media; upstream creators retain their rights and licenses. Artilect-authored site content: CC BY 4.0.</p></div><div><div class="eyebrow">STEAL THE SHOW. NOT THE CREDIT.</div><p><a href="https://github.com/PaulTiffany/artilect">GitHub ↗</a> · <a href="https://github.com/PaulTiffany/artilect/issues">Community ↗</a></p></div></div></footer>
@@ -115,9 +115,9 @@ const vid=s=>{const id=yt(s);return id?'<a class="media" target="_blank" rel="no
 let data={stacks:[],battles:[]};
 function stackCard(s){
  const desc=s.notes||'Direct upstream sources, selected and composed by the community.';
- return '<article class="card"><div class="cardtop"><small>'+E(s.week)+' · '+E(s.technologies.length)+' UPSTREAM SOURCES'+(s.selected?' · ★ CROWD PICK':'')+'</small><h3>@'+E(s.contributor)+'</h3></div>'+
+ return '<article class="card"><div class="cardtop"><small>'+E(s.week)+' · @'+E(s.contributor)+' · '+E(s.technologies.length)+' UPSTREAM SOURCES'+(s.selected?' · ★ CROWD PICK':'')+'</small><h3>'+E(s.title||s.contributor)+'</h3></div>'+
  (s.demo?vid(s.demo):'')+'<div class="cardbody"><p>'+E(desc).slice(0,550)+'</p><div class="projects">'+cardUpstreams(s.technologies)+'</div>'+
- '<div class="cardbottom"><a href="'+E(U(s.github))+'" target="_blank" rel="noopener noreferrer">GET THE SUBS ↗</a>'+(s.issue_url?'<a href="'+E(U(s.issue_url))+'" target="_blank" rel="noopener noreferrer">CREDITS ↗</a>':'')+'</div></div></article>';
+ '<div class="cardbottom"><a href="'+E(U(s.github))+'" target="_blank" rel="noopener noreferrer">VIEW PRODUCTION ↗</a>'+(s.issue_url?'<a href="'+E(U(s.issue_url))+'" target="_blank" rel="noopener noreferrer">CREDITS ↗</a>':'')+'</div></div></article>';
 }
 function battleCard(b){
  return '<article class="card battle-card">'+(b.media?vid(b.media):'')+'<div class="cardtop"><small>'+E(b.week)+(b.winner?' · CROWD FAVORITE':'')+'</small><h3>'+E(b.producer)+'</h3></div>'+
@@ -127,11 +127,16 @@ function battleCard(b){
 function render(){
  const weeks=[...new Set(data.stacks.map(s=>s.week))].sort().reverse();
  $('week-select').innerHTML='<option value="all">All weeks</option>'+weeks.map(w=>'<option value="'+E(w)+'">'+E(w)+'</option>').join('');
- function drawStacks(){const week=$('week-select').value,stacks=data.stacks.filter(s=>week==='all'||s.week===week);$('stacks-list').innerHTML=stacks.length?stacks.map(stackCard).join(''):'<div class="empty"><h3>First crate is waiting.</h3><p>No accepted stacks yet. Bring a composition of two or more upstream GitHub projects, show what they can do, and give their creators the spotlight.</p><a class="button" href="https://github.com/PaulTiffany/artilect/issues/new?template=stack.yml">DROP THE FIRST STACK ↗</a></div>'}
+ function drawStacks(){const week=$('week-select').value,stacks=data.stacks.filter(s=>week==='all'||s.week===week);$('stacks-list').innerHTML=stacks.length?stacks.map(stackCard).join(''):'<div class="empty"><h3>First track is waiting.</h3><p>Make a thing with upstream technologies, record how it was made in your repo, and submit the finished work.</p><a class="button" href="./artilect-starter.zip" download>EXPORT STARTER ↓</a></div>'}
  $('week-select').addEventListener('change',drawStacks);drawStacks();
  const battles=[...data.battles].sort((a,b)=>Number(b.winner)-Number(a.winner)||b.week.localeCompare(a.week));
  $('battles-list').innerHTML=battles.length?battles.map(battleCard).join(''):'<div class="empty"><h3>Mic check. One, two.</h3><p>The battle feed opens when producers begin dropping tracks. No manufactured winners, fake performances, or synthetic votes here.</p><a class="button" href="https://github.com/PaulTiffany/artilect/issues/new?template=battle.yml">BRING A TRACK ↗</a></div>';
 }
+const makePrompt = "Use the Artilect production starter from https://paultiffany.github.io/artilect/artilect-starter.zip . Read AGENTS.md, then make a real creative production about [YOUR SUBJECT] using these upstream technologies: [X], [Y], [Z]. Use direct Git submodules, record the exact production process and original credits, publish or link the finished media, and validate the repo. Ask me before public submission to https://github.com/PaulTiffany/artilect/issues/new?template=stack.yml .";
+document.getElementById('copy-prompt').addEventListener('click', async function(){
+  try { await navigator.clipboard.writeText(makePrompt); this.textContent='COPIED ✓'; }
+  catch { window.prompt('Copy this into your favorite agent:',makePrompt); }
+});
 fetch('./site-data.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('data');return r.json()}).then(x=>{data=x;render()}).catch(()=>{render();});
 </script>
 </body>
