@@ -28,8 +28,27 @@
     .disc{border-radius:50%;width:min(100%,400px);aspect-ratio:1;display:grid;place-items:center;background:repeating-radial-gradient(circle,#30303a 0 3px,#171720 4px 7px);box-shadow:28px 28px 55px #0008;position:relative;transform:rotate(-12deg);border:2px solid #41404d}
     .disc:before{content:"";width:42%;aspect-ratio:1;border-radius:50%;background:var(--hot);border:5px solid var(--ink);position:absolute}
     .disc:after{content:"";width:9%;aspect-ratio:1;border-radius:50%;background:var(--paper);border:4px solid var(--ink);position:absolute}
-    .disc label{z-index:1;position:relative;font-weight:1000;max-width:100px;text-align:center;transform:rotate(12deg);font-size:19px;line-height:1.05;color:var(--ink)}
+    .disc label{z-index:1;position:absolute;inset:30% 20%;display:flex;flex-direction:column;justify-content:space-between;align-items:center;font-weight:950;text-align:center;transform:rotate(12deg);font-size:clamp(13px,1.6vw,19px);line-height:1.05;color:var(--ink);pointer-events:none}
+    .disc label span{white-space:nowrap}
     .record-note{margin-top:23px;text-align:center;color:#b2b0ba;font-size:12px;letter-spacing:.15em;font-weight:850}
+    .week-shelf{padding:26px 0;background:var(--paper2);border-bottom:1px solid #cdc8ba}
+    .week-shelf .eyebrow{margin-bottom:9px}
+    .week-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+    .week-status{font-size:13px;color:#4b4750;font-weight:750}
+    .week-index{display:flex;gap:8px;overflow-x:auto;padding:3px 0 9px;scrollbar-width:thin}
+    .week-chip{flex:0 0 auto;background:transparent;border:1px solid #99939c;color:var(--ink);padding:11px 13px;font-size:12px;font-weight:850;text-align:left;cursor:pointer}
+    .week-chip[aria-pressed="true"]{background:var(--ink);color:var(--accent);border-color:var(--ink)}
+    .week-chip .count{display:block;font-size:11px;font-weight:600;margin-top:3px}
+    .battle-spotlight{display:grid;grid-template-columns:1.25fr 1fr;background:#242430;border:1px solid #565363;margin:26px 0;overflow:hidden}
+    .battle-poster{background:#12121a;min-width:0;display:flex;align-items:center}
+    .battle-poster .media{width:100%;min-height:200px}
+    .battle-info{padding:27px;display:flex;flex-direction:column;justify-content:center;gap:15px}
+    .battle-info h3{font-size:clamp(26px,3vw,43px);margin:0;line-height:1.08;letter-spacing:-.05em}
+    .battle-info p{color:#d0cdd6;line-height:1.6;margin:0}
+    .media-links{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;font-weight:850;color:var(--accent)}
+    .media.youtube-play{border:0;padding:0;width:100%;cursor:pointer;color:#fff}
+    iframe.media{border:0;display:block}
+    .cardbottom{flex-wrap:wrap;gap:12px}
     .ticker{background:var(--accent);padding:14px 0;font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:950;overflow:hidden}
     .ticker div{white-space:nowrap;text-align:center}
     .section{padding:84px 0}.section.dark{background:#171721;color:#f5f2e8}.section-title{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:29px}
@@ -50,7 +69,7 @@
     .cardtop h3{font-size:26px;letter-spacing:-.05em;line-height:1.06;z-index:1;overflow-wrap:anywhere;margin:0}.cardtop small{z-index:1;color:#ccc9d5;font-size:11px;font-weight:800;letter-spacing:.09em}
     .cardbody{padding:19px;display:flex;flex-direction:column;gap:10px;flex:1}.cardbody p{font-size:13px;line-height:1.5;color:#5b5761;overflow-wrap:anywhere;margin:0}.projects{display:flex;gap:7px;flex-wrap:wrap}
     .project{font-size:11px;font-weight:750;border:1px solid #c8c5be;padding:6px 8px;max-width:100%;overflow-wrap:anywhere}
-    .cardbottom{display:flex;justify-content:space-between;margin-top:auto;padding-top:10px;font-size:12px;font-weight:850}
+    .cardbottom{display:flex;justify-content:space-between;margin-top:auto;padding-top:10px;font-size:12px;font-weight:850;align-items:center}
     .empty{border:2px dashed #b1aeb0;padding:35px;min-height:215px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:10px;background:#eeebe2}
     .empty h3{font-size:29px;letter-spacing:-.04em;margin:0}.empty p{line-height:1.6;color:#625f66;max-width:600px;margin:0}
     .dark .empty{background:#242430;border-color:#595866}.dark .empty p{color:#b6b5c0}
@@ -64,7 +83,7 @@
     .footer p{max-width:560px;color:#a7a5b1;font-size:13px;line-height:1.6}
     select{border:1px solid #b5b1ac;background:#fdfbf6;font:inherit;padding:10px 11px;min-width:150px}
     .muted{color:#75727d}.dark .muted{color:#afacba}
-    @media(max-width:800px){.hero-grid{grid-template-columns:1fr;padding:65px 0;gap:45px}.record{display:none}.cards,.three{grid-template-columns:1fr 1fr}.featured{grid-template-columns:1fr}nav .links{gap:13px}nav .links a:not(.navcta){display:none}}
+    @media(max-width:800px){.battle-spotlight{grid-template-columns:1fr}.hero-grid{grid-template-columns:1fr;padding:65px 0;gap:45px}.record{display:none}.cards,.three{grid-template-columns:1fr 1fr}.featured{grid-template-columns:1fr}nav .links{gap:13px}nav .links a:not(.navcta){display:none}}
     @media(max-width:550px){.cards,.three{grid-template-columns:1fr}.section{padding:58px 0}.top nav{min-height:66px}.section-title{align-items:flex-start;flex-direction:column}h1{font-size:60px}.shell{padding:0 18px}}
   </style>
 </head>
@@ -81,16 +100,21 @@
       <p class="hero-copy">Tell your GPT what to make with X, Y and Z. Drop the finished work with its production repo and upstream subs. Then bring it to the Wednesday MC battle.</p>
       <div class="actions"><a class="button" href="./artilect-starter.zip" download>EXPORT TO AGENT ↓</a><button class="button ghost" id="copy-prompt" type="button">COPY PROMPT</button><a class="button ghost" href="https://github.com/PaulTiffany/artilect/issues/new?template=stack.yml">SUBMIT REPO ↗</a></div>
     </div>
-    <div class="record" aria-hidden="true"><div class="disc"><label>ALL GLORY UPSTREAM</label></div><div class="record-note">SUBMODULES ARE THE SAMPLES // 001</div></div>
+    <div class="record" aria-hidden="true"><div class="disc"><label><span>ALL GLORY</span><span>UPSTREAM</span></label></div><div class="record-note">SUBMODULES ARE THE SAMPLES // 001</div></div>
   </div></section>
   <div class="ticker"><div>BRING THE SUBS ✦ DROP THE STACK ✦ PASS THE MIC ✦ STEAL THE SHOW, NOT THE CREDIT ✦ ALL GLORY UPSTREAM</div></div>
+  <section id="weeks" class="week-shelf"><div class="shell">
+    <div class="week-head"><div class="eyebrow">WEEKLY DROPS · BROWSE THE ARCHIVE</div><div id="week-status" class="week-status" aria-live="polite"></div></div>
+    <div id="week-index" class="week-index" aria-label="Browse Artilect by week"></div>
+  </div></section>
   <section id="battles" class="section dark"><div class="shell">
     <div class="section-title"><div><div class="eyebrow" style="color:var(--accent)">WEDNESDAY MAIN EVENT · MC BATTLES</div><h2>THE BATTLE FEED.</h2></div><a class="tag" href="https://github.com/PaulTiffany/artilect/issues/new?template=battle.yml">DROP A TRACK ↗</a></div>
-    <p class="sub">Two producers. One selected stack. The crowd calls the flips. Watch the performances; trace every sample upstream.</p>
+    <p class="sub">The weekly show, with links to each producer's original media and the source stacks behind it. Every accepted production has a place in the crates below.</p>
+    <div id="battle-feature"></div>
     <div id="battles-list" class="cards" aria-live="polite"></div>
   </div></section>
   <section id="crates" class="section"><div class="shell">
-    <div class="section-title"><div><div class="eyebrow">THE TRACKS AND THEIR RECIPES</div><h2>THE STACK CRATES.</h2></div><label class="eyebrow" for="week-select">WEEK <select id="week-select"><option value="all">All weeks</option></select></label></div>
+    <div class="section-title"><div><div class="eyebrow">THE TRACKS AND THEIR RECIPES</div><h2>THE STACK CRATES.</h2></div><a class="tag" href="#weeks">BROWSE BY WEEK ↑</a></div>
     <p class="sub">Each track comes with the repo that produced it: scripts, instructions, and pinned upstream technologies. Watch it. Fork it. Flip it.</p>
     <div id="stacks-list" class="cards" aria-live="polite"></div>
   </div></section>
