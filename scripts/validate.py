@@ -23,6 +23,19 @@ def valid_public_url(s):
     except ValueError:
         return False
 
+# An untouched scaffold is not yet a submitted production. Keep initial forks green;
+# as soon as the creator edits the recipe or adds technologies, enforce every check.
+starter = ROOT / "artilect.json"
+if starter.is_file() and not (ROOT / ".gitmodules").exists():
+    try:
+        data = json.loads(starter.read_text(encoding="utf-8"))
+        if (data.get("title") == "TODO: Name your production"
+                and data.get("summary") == "TODO: One sentence about what you made"):
+            print("✓ Blank Artilect starter ready. Add technologies and create real media before submitting.")
+            sys.exit(0)
+    except (ValueError, OSError):
+        pass
+
 metadata = ROOT / "artilect.json"
 if not metadata.exists():
     ERRORS.append("Missing artilect.json")
