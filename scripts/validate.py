@@ -64,6 +64,13 @@ if media_path:
 for path in ("README.md", "AGENTS.md", "production/README.md"):
     require((ROOT / path).is_file(), "Missing " + path)
 
+if (ROOT / "README.md").is_file():
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    require("example.com/replace-this" not in readme,
+            "Replace the starter watch link with your real media link")
+    require("Replace this sentence" not in readme,
+            "Describe the actual creative work in README.md")
+
 mods = ROOT / ".gitmodules"
 entries = {}
 if not mods.exists():
