@@ -2,7 +2,7 @@ name: Publish Artilect stage
 
 on:
   push:
-    branches: [main, site-source]
+    branches: [main, site-source, submission-template]
   issues:
     types: [opened, edited, labeled, unlabeled, closed, reopened]
   workflow_dispatch:
@@ -39,6 +39,13 @@ jobs:
           path: _site_src
           persist-credentials: false
           submodules: false
+      - name: Checkout agent-ready production starter
+        uses: actions/checkout@v4
+        with:
+          ref: submission-template
+          path: _starter_src
+          persist-credentials: false
+          submodules: false
       - name: Prepare Python
         uses: actions/setup-python@v5
         with:
@@ -48,6 +55,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ARTILECT_ROOT: .
           ARTILECT_OUT: _pages
+          ARTILECT_TEMPLATE: _starter_src
         run: python _site_src/site/build.py
       - name: Configure Pages
         uses: actions/configure-pages@v5
