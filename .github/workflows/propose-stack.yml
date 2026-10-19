@@ -1,4 +1,4 @@
-name: Propose direct upstream submodules
+name: Propose completed Artilect production
 
 on:
   issues:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       issue_number:
-        description: "Existing [STACK] issue number to process"
+        description: "Existing [STACK] issue number"
         required: true
         type: number
 
@@ -20,99 +20,128 @@ jobs:
     if: github.event_name == 'workflow_dispatch' || startsWith(github.event.issue.title, '[STACK]')
     runs-on: ubuntu-latest
     steps:
-      - name: Validate URLs and propose pinned Git submodule PR
+      - name: Validate and pin complete production repository
         uses: actions/github-script@v7
         with:
           script: |
             const owner = context.repo.owner, repo = context.repo.repo;
-            const issueNumber = context.eventName === 'workflow_dispatch'
-              ? Number(context.payload.inputs.issue_number)
-              : context.issue.number;
-            const response = await github.rest.issues.get({owner, repo, issue_number: issueNumber});
-            const issue = response.data;
+            const num = context.eventName === 'workflow_dispatch'
+              ? Number(context.payload.inputs.issue_number) : context.issue.number;
+            const {data: issue} = await github.rest.issues.get({owner,repo,issue_number:num});
             if (!issue.title.startsWith('[STACK]') || issue.pull_request) {
-              core.setFailed('Not a [STACK] issue'); return;
+              core.setFailed('Not a stack submission issue'); return;
             }
-            const body = issue.body || '';
-            const field = label => {
-              const marker = '### ' + label;
-              const p = body.indexOf(marker);
-              if (p === -1) throw Error('Missing issue-form field: ' + label);
-              const rest = body.slice(p + marker.length).split(/\n### /)[0].trim();
-              return rest === '_No response_' ? '' : rest;
+            const field = name => {
+              const marker = '### ' + name;
+              const body = issue.body || '';
+              const pos = body.indexOf(marker);
+              if(pos<0) throw Error('Missing field: '+name);
+              return body.slice(pos+marker.length).split(/\n### /)[0].trim();
             };
+            const fileAt = async (sourceOwner,sourceRepo,path,ref) => {
+              const {data}=await github.rest.repos.getContent({
+                owner:sourceOwner,repo:sourceRepo,path,ref
+              });
+              if(Array.isArray(data)||data.type!=='file'||!data.content) throw Error('Missing file: '+path);
+              return Buffer.from(data.content,'base64').toString('utf8');
+            };
+            const nonplaceholder = s => typeof s === 'string' && !!s.trim() && !s.includes('TODO');
             try {
-              const week = field('Week (YYYY-MM-DD)');
-              const handle = field('Contributor GitHub handle').toLowerCase();
-              if (!/^\d{4}-\d{2}-\d{2}$/.test(week) ||
-                  new Date(week + 'T00:00:00Z').toISOString().slice(0,10) !== week ||
-                  new Date(week + 'T00:00:00Z').getUTCDay() !== 3) {
-                throw Error('Week must be a valid Wednesday in YYYY-MM-DD');
-              }
-              if (!/^[a-z0-9](?:[a-z0-9_-]{0,37}[a-z0-9])?$/.test(handle)) {
-                throw Error('Contributor must be a safe handle (letters, digits, - or _)');
-              }
-              const raw = field('Upstream technologies (one GitHub repository URL per line)')
-                .split(/\r?\n/).map(s => s.trim()).filter(Boolean);
-              if (raw.length < 2 || raw.length > 8) throw Error('Provide 2–8 direct upstream GitHub repositories');
-              const seen = new Set(), entries = [];
-              for (const url of raw) {
-                const match = /^https:\/\/github\.com\/([A-Za-z0-9-]+)\/([A-Za-z0-9_.-]+?)(?:\.git)?\/?$/.exec(url);
-                if (!match || match[2] === '.' || match[2] === '..') throw Error('Only direct https://github.com/owner/repository URLs are allowed: ' + url);
-                const upstream = await github.rest.repos.get({owner:match[1],repo:match[2]});
-                if (upstream.data.private || upstream.data.disabled) throw Error('Upstream must be accessible and public: '+url);
-                if (upstream.data.full_name.toLowerCase() === (owner+'/'+repo).toLowerCase()) throw Error('Artilect itself is not an upstream technology');
-                const key = upstream.data.full_name.toLowerCase();
-                if (seen.has(key)) throw Error('Duplicate upstream repository: '+key);
-                seen.add(key);
-                const head = await github.rest.repos.getBranch({
-                  owner:upstream.data.owner.login, repo:upstream.data.name,
-                  branch:upstream.data.default_branch
-                });
-                let slug = upstream.data.name.toLowerCase();
-                if (entries.some(e => e.slug === slug)) slug = (upstream.data.owner.login + '-' + upstream.data.name).toLowerCase();
-                if (entries.some(e => e.slug === slug)) throw Error('Repository path collision');
-                entries.push({slug, sha:head.data.commit.sha, url:upstream.data.html_url+'.git', name:upstream.data.full_name});
-              }
-              const branchName = 'submissions/issue-' + issueNumber;
-              const branchExists = await github.rest.git.getRef({owner,repo,ref:'heads/'+branchName}).then(()=>true,e=>{
-                if(e.status===404) return false; throw e;
+              const week=field('Week (YYYY-MM-DD)');
+              const raw=field('Production repository URL');
+              if(!/^\d{4}-\d{2}-\d{2}$/.test(week)||
+                 new Date(week+'T00:00:00Z').toISOString().slice(0,10)!==week||
+                 new Date(week+'T00:00:00Z').getUTCDay()!==3) throw Error('Week must be a valid Wednesday');
+              const match=/^https:\/\/github\.com\/([A-Za-z0-9-]+)\/([A-Za-z0-9_.-]+?)(?:\.git)?\/?$/.exec(raw);
+              if(!match) throw Error('Use a direct HTTPS GitHub repository URL');
+              const {data: source}=await github.rest.repos.get({owner:match[1],repo:match[2]});
+              if(source.private||source.disabled||source.archived) throw Error('Production repository must be public, active, and accessible');
+              if(source.full_name.toLowerCase()===(owner+'/'+repo).toLowerCase()) throw Error('Submit your production repo, not Artilect itself');
+              if(source.owner.type==='User'&&source.owner.login.toLowerCase()!==issue.user.login.toLowerCase())
+                throw Error('Submit a repository you own; organization repositories can be reviewed separately');
+              const sOwner=source.owner.login,sRepo=source.name;
+              const {data: head}=await github.rest.repos.getBranch({owner:sOwner,repo:sRepo,branch:source.default_branch});
+              const sha=head.commit.sha;
+              const meta=JSON.parse(await fileAt(sOwner,sRepo,'artilect.json',sha));
+              if(meta.schema!==1||!['title','summary','reproduce','rights_notes'].every(k=>nonplaceholder(meta[k])))
+                throw Error('Complete artilect.json with schema 1 and real title, summary, reproduction and rights notes');
+              const media=meta.media_url||'';
+              const mediaPath=meta.media_path||'';
+              if(!media&&!mediaPath) throw Error('Link or include a real creative output in artilect.json');
+              if(media&&!/^https:\/\//i.test(media)) throw Error('Public media URL must use HTTPS');
+              await Promise.all(['README.md','AGENTS.md','production/README.md'].map(
+                path=>fileAt(sOwner,sRepo,path,sha)));
+              const modules=await fileAt(sOwner,sRepo,'.gitmodules',sha);
+              const {data: gitCommit}=await github.rest.git.getCommit({owner:sOwner,repo:sRepo,commit_sha:sha});
+              const {data: tree}=await github.rest.git.getTree({
+                owner:sOwner,repo:sRepo,tree_sha:gitCommit.tree.sha,recursive:'true'
               });
-              if (branchExists) {core.notice('Proposal already exists on branch '+branchName);return;}
-              const base = await github.rest.repos.getBranch({owner,repo,branch:'main'});
-              const baseSha = base.data.commit.sha;
-              const gitCommit = await github.rest.git.getCommit({owner,repo,commit_sha:baseSha});
-              let modules = await github.rest.repos.getContent({owner,repo,path:'.gitmodules',ref:'main'})
+              if(tree.truncated) throw Error('Production repository tree is too large to validate safely');
+              const linkPaths=new Set(tree.tree.filter(x=>x.mode==='160000').map(x=>x.path));
+              if(mediaPath){
+                if(!/^output\/[A-Za-z0-9_./-]+$/.test(mediaPath)||mediaPath.includes('..')||
+                   !tree.tree.some(x=>x.path===mediaPath&&x.type==='blob'))
+                  throw Error('media_path must reference a committed file inside output/');
+              }
+              const upstream=[];
+              let section=null;
+              for(const line of modules.split(/\r?\n/)){
+                const m=/^\[submodule "([^"]+)"\]$/.exec(line.trim());
+                if(m){section={};upstream.push(section);continue;}
+                if(!section)continue;
+                const value=/^\s*(path|url)\s*=\s*(.*?)\s*$/.exec(line);
+                if(value)section[value[1]]=value[2];
+              }
+              if(upstream.length<2) throw Error('Provide at least two directly submoduled upstream technologies');
+              const seen=new Set();
+              for(const t of upstream){
+                if(!t.path||!/^technologies\/[a-zA-Z0-9_.-]+$/.test(t.path)||
+                   seen.has(t.path)||!linkPaths.has(t.path))
+                  throw Error('Each technology must be a unique, tracked direct submodule inside technologies/');
+                if(!/^https:\/\/github\.com\/[A-Za-z0-9-]+\/[A-Za-z0-9_.-]+(?:\.git)?$/.test(t.url||''))
+                  throw Error('Upstream technologies must link to original public GitHub HTTPS repositories');
+                seen.add(t.path);
+              }
+              if(linkPaths.size!==upstream.length) throw Error('Unexpected gitlink outside declared direct technology paths');
+              const contributor=issue.user.login.toLowerCase();
+              const path='stacks/'+week+'/'+contributor;
+              const branchName='submissions/issue-'+num;
+              const exists=await github.rest.git.getRef({owner,repo,ref:'heads/'+branchName})
+                .then(()=>true,e=>{if(e.status===404)return false;throw e});
+              if(exists){core.notice('Existing proposal: '+branchName);return;}
+              const {data:base}=await github.rest.repos.getBranch({owner,repo,branch:'main'});
+              const {data:baseCommit}=await github.rest.git.getCommit({owner,repo,commit_sha:base.commit.sha});
+              let register=await github.rest.repos.getContent({owner,repo,path:'.gitmodules',ref:'main'})
                 .then(r=>Buffer.from(r.data.content,'base64').toString('utf8'),e=>{
-                  if(e.status===404) return ''; throw e;
-                });
-              const prefix = 'stacks/'+week+'/'+handle+'/';
-              if (modules.includes('path = '+prefix)) throw Error('Contributor already has a submission for this week');
-              const trees = [];
-              for(const e of entries) {
-                const path=prefix+e.slug;
-                modules += '\n[submodule "'+path+'"]\n\tpath = '+path+'\n\turl = '+e.url+'\n';
-                trees.push({path, mode:'160000', type:'commit', sha:e.sha});
-              }
-              const blob=await github.rest.git.createBlob({owner,repo,content:modules.trimStart(),encoding:'utf-8'});
-              trees.push({path:'.gitmodules',mode:'100644',type:'blob',sha:blob.data.sha});
-              const tree=await github.rest.git.createTree({owner,repo,base_tree:gitCommit.data.tree.sha,tree:trees});
-              const commit=await github.rest.git.createCommit({
-                owner,repo,message:'Add upstream composition '+week+'/'+handle+' (issue #'+issueNumber+')',
-                tree:tree.data.sha, parents:[baseSha]
+                  if(e.status===404)return '';throw e});
+              if(register.includes('path = '+path+'\n')||register.includes('path = '+path+'\r\n'))
+                throw Error('Contributor already has a stack recorded for this Wednesday');
+              register=register.trimEnd()+'\n[submodule "'+path+'"]\n\tpath = '+path+
+                '\n\turl = '+source.html_url+'.git\n';
+              const {data:blob}=await github.rest.git.createBlob({owner,repo,content:register,encoding:'utf-8'});
+              const {data:nextTree}=await github.rest.git.createTree({owner,repo,base_tree:baseCommit.tree.sha,
+                tree:[
+                  {path:'.gitmodules',mode:'100644',type:'blob',sha:blob.sha},
+                  {path,mode:'160000',type:'commit',sha}
+                ]});
+              const {data:commit}=await github.rest.git.createCommit({
+                owner,repo,message:'Record production '+week+'/'+contributor+' (#'+num+')',
+                parents:[base.commit.sha],tree:nextTree.sha
               });
-              await github.rest.git.createRef({owner,repo,ref:'refs/heads/'+branchName,sha:commit.data.sha});
-              const notes=field('What can your composition do, and who made the upstream work?');
-              const pr=await github.rest.pulls.create({
-                owner,repo,head:branchName,base:'main',
-                title:'[Stack] '+week+' / '+handle,
-                body:'Closes #'+issueNumber+'\n\n**Direct pinned upstream submodules:**\n'+entries.map(e=>'- '+e.name+' @ `'+e.sha+'`').join('\n')+
-                  '\n\n**Submitter notes:**\n'+notes+'\n\nReview authors, licenses, repo identity, safety, and proposed composition before merging. No upstream code was run.'
+              await github.rest.git.createRef({owner,repo,ref:'refs/heads/'+branchName,sha:commit.sha});
+              const {data:pr}=await github.rest.pulls.create({owner,repo,
+                base:'main',head:branchName,title:'[Production] '+week+' / '+contributor,
+                body:'Closes #'+num+'\n\n**'+meta.title+'** — '+meta.summary+
+                  '\n\n**Production repository:** '+source.html_url+' @ `'+sha+'`'+
+                  '\n\n**Upstream direct submodules:**\n'+upstream.map(t=>'- '+t.path+' → '+t.url).join('\n')+
+                  '\n\n**Media:** '+(media||mediaPath)+
+                  '\n\nMaintainer: review rights, provenance and creative output. No submitted code was executed.'
               });
-              await github.rest.issues.createComment({owner,repo,issue_number:issueNumber,
-                body:'🎤 Stack proposal is ready for review: #'+pr.data.number+'. The upstream repositories are pinned directly, without wrappers.'});
-            } catch(error) {
+              await github.rest.issues.createComment({owner,repo,issue_number:num,
+                body:'🎤 Your complete production is pinned as a proposed weekly submodule: #'+pr.number+'. All upstream technology submodules remain inside your production repo.'});
+            }catch(error){
               core.setFailed(error.message);
-              await github.rest.issues.createComment({owner,repo,issue_number:issueNumber,
-                body:'Unable to propose this stack automatically: '+String(error.message).slice(0,500)+'\n\nPlease correct the submission or ask a maintainer to rerun the workflow.'});
+              await github.rest.issues.createComment({owner,repo,issue_number:num,
+                body:'Could not propose this production: '+String(error.message).slice(0,500)+
+                  '\n\nFix the repository and re-run **Propose completed Artilect production** with this issue number.'});
             }
