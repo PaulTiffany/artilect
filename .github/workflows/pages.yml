@@ -2,7 +2,7 @@ name: Publish Artilect stage
 
 on:
   push:
-    branches: [main, site-source]
+    branches: [main]
   issues:
     types: [opened, edited, labeled, unlabeled, closed, reopened]
   workflow_dispatch:
